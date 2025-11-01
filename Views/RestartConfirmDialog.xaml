@@ -1,0 +1,219 @@
+<Window x:Class="MediaDetectionSystem.Views.RestartConfirmDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="需要重启" 
+        Height="320" 
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        FontFamily="Microsoft YaHei UI, HarmonyOS Sans SC">
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            BorderBrush="#E5E7EB" 
+            BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.15" BlurRadius="20" ShadowDepth="0"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部标题栏 -->
+            <Border Grid.Row="0" 
+                    Background="#F9FAFB" 
+                    CornerRadius="12,12,0,0" 
+                    Padding="24,20">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <!-- 问号图标 -->
+                        <Border Width="40" 
+                                Height="40" 
+                                Background="#3B82F6" 
+                                CornerRadius="20"
+                                Margin="0,0,16,0">
+                            <TextBlock Text="?" 
+                                      FontSize="24" 
+                                      FontWeight="Bold" 
+                                      Foreground="White" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"/>
+                        </Border>
+                        
+                        <TextBlock Text="需要重启" 
+                                  FontSize="18" 
+                                  FontWeight="SemiBold" 
+                                  Foreground="#111827"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- 关闭按钮 -->
+                    <Button x:Name="BtnClose"
+                            Width="32" 
+                            Height="32"
+                            HorizontalAlignment="Right"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="CloseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                   CornerRadius="6">
+                                                <TextBlock Text="✕" 
+                                                          FontSize="16" 
+                                                          Foreground="#6B7280" 
+                                                          HorizontalAlignment="Center" 
+                                                          VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F3F4F6"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- 内容区域 -->
+            <StackPanel Grid.Row="1" 
+                       Margin="24,24,24,20">
+                <TextBlock Text="部分设置需要重启应用后生效："
+                          FontSize="14"
+                          Foreground="#374151"
+                          Margin="0,0,0,16"/>
+                
+                <!-- 设置项列表 -->
+                <Border Background="#F9FAFB" 
+                       CornerRadius="8" 
+                       Padding="16">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="•" 
+                                      FontSize="14" 
+                                      Foreground="#6B7280" 
+                                      Margin="0,0,8,0"/>
+                            <TextBlock Text="启动时最小化" 
+                                      FontSize="14" 
+                                      Foreground="#1F2937"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" 
+                                      FontSize="14" 
+                                      Foreground="#6B7280" 
+                                      Margin="0,0,8,0"/>
+                            <TextBlock Text="界面语言" 
+                                      FontSize="14" 
+                                      Foreground="#1F2937"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="是否立即重启应用？"
+                          FontSize="14"
+                          FontWeight="Medium"
+                          Foreground="#111827"
+                          Margin="0,20,0,0"
+                          HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 底部按钮 -->
+            <Border Grid.Row="2" 
+                   Background="#F9FAFB" 
+                   CornerRadius="0,0,12,12" 
+                   Padding="24,16">
+                <StackPanel Orientation="Horizontal" 
+                           HorizontalAlignment="Center">
+                    <!-- 否按钮 -->
+                    <Button x:Name="BtnNo"
+                           Content="否 (N)" 
+                           Width="140" 
+                           Height="40"
+                           Margin="0,0,12,0"
+                           Background="White"
+                           BorderBrush="#D1D5DB"
+                           BorderThickness="1"
+                           FontSize="14"
+                           Cursor="Hand"
+                           Click="NoButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                                   BorderThickness="{TemplateBinding BorderThickness}"
+                                                   CornerRadius="8"
+                                                   Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F3F4F6"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- 是按钮 -->
+                    <Button x:Name="BtnYes"
+                           Content="是 (Y)" 
+                           Width="140" 
+                           Height="40"
+                           Background="#3B82F6"
+                           Foreground="White"
+                           BorderThickness="0"
+                           FontSize="14"
+                           FontWeight="Medium"
+                           Cursor="Hand"
+                           Click="YesButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                   CornerRadius="8"
+                                                   Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#2563EB"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
+

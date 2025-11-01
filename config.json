@@ -1,0 +1,49 @@
+{
+  "processConfigs": {
+    "media_capture.exe": {
+      "processName": "media_capture.exe",
+      "displayName": "摄像头/麦克风",
+      "description": "用于捕获摄像头和麦克风内容的应用",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Suspend",
+      "autoResumeAfter": "00:05:00",
+      "alertBeforeAction": 30
+    },
+    "screenCapture.exe": {
+      "processName": "screenCapture.exe",
+      "displayName": "屏幕捕获",
+      "description": "用于捕获屏幕当前显示的内容",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Suspend",
+      "autoResumeAfter": "00:05:00",
+      "alertBeforeAction": 30
+    },
+    "rtcRemoteDesktop.exe": {
+      "processName": "rtcRemoteDesktop.exe",
+      "displayName": "远程控制",
+      "description": "用于对该电脑进行远程控制",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Terminate",
+      "autoResumeAfter": "00:00:00",
+      "alertBeforeAction": 30
+    }
+  },
+  "alertConfig": {
+    "showVisualAlert": true,
+    "playSound": true,
+    "flashTaskbar": true,
+    "showTopLine": true,
+    "showBorder": false,
+    "showFlash": true,
+    "enableContinuousAlert": true,
+    "continuousAlertType": "TopLine",
+    "continuousAlertUntil": "ProcessEnd",
+    "alertColor": "#FF0000",
+    "lineThickness": 5,
+    "flashDuration": 3,
+    "logCleanupDays": 30
+  }
+}

@@ -1,0 +1,16 @@
+StarReminder v1.2.0
+
+发布日期: 周六 2025/11/01 15:49:57.55
+
+文件清单:
+- StarReminder.exe          主程序
+- logo.png                  程序图标
+- config.json               配置文件
+- settings.json             设置文件
+
+使用说明:
+1. 双击 StarReminder.exe 启动程序
+2. 在设置中配置要监控的进程
+3. 选择通知样式（Defender 或 Native）
+
+更多信息请查看: https://github.com/StarReminder

@@ -1,0 +1,44 @@
+# StarReminder 文档导航
+
+这是 StarReminder 项目的完整文档集合。
+
+## 📂 文档结构
+
+```
+docs/
+├── README.md              # 📚 文档中心索引
+├── installation.md        # 📦 安装指南
+├── configuration.md       # ⚙️ 配置指南
+├── usage.md              # 📖 使用教程
+├── architecture.md        # 🏗️ 技术架构
+├── development.md         # 🛠️ 开发指南
+└── api.md                # 📘 API 文档
+```
+
+## 🎯 快速导航
+
+### 用户文档
+- [安装指南](installation.md) - 如何安装和部署 StarReminder
+- [配置指南](configuration.md) - 详细的配置参数说明
+- [使用教程](usage.md) - 完整的使用说明和最佳实践
+
+### 技术文档
+- [技术架构](architecture.md) - 系统架构设计和实现细节
+- [开发指南](development.md) - 开发环境搭建和贡献指南
+- [API 文档](api.md) - 完整的 API 接口文档
+
+## 📊 文档统计
+
+- **总文档数**: 7 个
+- **总字数**: ~30,000 字
+- **预计阅读时间**: ~150 分钟
+- **最后更新**: 2025-11-01
+
+## 🔗 其他资源
+
+- [主 README](../README.md)
+- [快速开始](../QUICKSTART.md)
+- [更新日志](../CHANGELOG.md)
+- [贡献指南](../CONTRIBUTING.md)
+- [许可证](../LICENSE)
+

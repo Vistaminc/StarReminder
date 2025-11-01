@@ -1,0 +1,916 @@
+<Window x:Class="MediaDetectionSystem.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="StarReminder - 设置" 
+        Height="650" 
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        Background="White"
+        Icon="../logo.png"
+        FontFamily="Microsoft YaHei UI, HarmonyOS Sans SC"
+        ResizeMode="CanResize">
+    
+    <Window.Resources>
+        <!-- 左侧导航按钮样式 -->
+        <Style x:Key="NavButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#4B5563"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                               BorderThickness="0,0,3,0"
+                               BorderBrush="{TemplateBinding BorderBrush}">
+                            <Grid>
+                                <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F3F4F6"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#EEF2FF"/>
+                    <Setter Property="Foreground" Value="#4F46E5"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="BorderBrush" Value="#4F46E5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 设置组标题样式 -->
+        <Style x:Key="SettingGroupTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <!-- 设置项标题样式 -->
+        <Style x:Key="SettingItemTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+
+        <!-- 设置项描述样式 -->
+        <Style x:Key="SettingItemDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#9CA3AF"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- 主布局 -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 保存成功提示（右上角） -->
+        <Border x:Name="SaveSuccessNotification"
+                Grid.Column="1"
+                Background="#10B981"
+                CornerRadius="8"
+                Padding="16,12"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,20,20,0"
+                Visibility="Collapsed"
+                Panel.ZIndex="999">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="10" ShadowDepth="2"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="✓" 
+                          FontSize="16" 
+                          FontWeight="Bold"
+                          Foreground="White" 
+                          Margin="0,0,8,0"
+                          VerticalAlignment="Center"/>
+                <TextBlock Text="设置已保存" 
+                          FontSize="14" 
+                          FontWeight="Medium"
+                          Foreground="White"
+                          VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 左侧导航 -->
+        <Border Grid.Column="0" Background="#F9FAFB" BorderBrush="#E5E7EB" BorderThickness="0,0,1,0">
+            <StackPanel Margin="0,32,0,0">
+                <TextBlock Text="设置中心" 
+                          FontSize="18" 
+                          FontWeight="Bold" 
+                          Foreground="#111827"
+                          Margin="20,0,0,24"/>
+
+                <RadioButton x:Name="NavStartup" 
+                            Content="⚡ 启动设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            IsChecked="True"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavAppearance" 
+                            Content="🎨 界面设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavNotification" 
+                            Content="🔔 通知设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavMonitor" 
+                            Content="👁️ 监控设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavAdvanced" 
+                            Content="⚙️ 高级设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavSecurity" 
+                            Content="🔒 安全设置" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+                
+                <RadioButton x:Name="NavAbout" 
+                            Content="ℹ️ 关于" 
+                            Style="{StaticResource NavButtonStyle}"
+                            Checked="NavButton_Checked"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 右侧内容区 -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="40,32,40,40">
+                <!-- 启动设置 -->
+                <StackPanel x:Name="PanelStartup" Visibility="Visible">
+                    <TextBlock Text="启动设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 开机自启动 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="开机自启动" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="Windows 启动时自动运行 StarReminder" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkStartWithWindows" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 启动时最小化 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="启动时最小化到托盘" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="应用启动后自动隐藏到系统托盘，不显示主窗口" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkStartMinimized" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- 界面设置 -->
+                <StackPanel x:Name="PanelAppearance" Visibility="Collapsed">
+                    <TextBlock Text="界面设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 主题模式 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="主题模式" Style="{StaticResource SettingItemTitle}"/>
+                            <TextBlock Text="选择应用的外观主题" 
+                                      Style="{StaticResource SettingItemDescription}"/>
+                            
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <RadioButton x:Name="RadioThemeLight" Content="浅色" GroupName="Theme" IsChecked="True" Margin="0,0,20,0"/>
+                                <RadioButton x:Name="RadioThemeDark" Content="深色" GroupName="Theme" Margin="0,0,20,0"/>
+                                <RadioButton x:Name="RadioThemeAuto" Content="跟随系统" GroupName="Theme"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- 通知设置 -->
+                <StackPanel x:Name="PanelNotification" Visibility="Collapsed">
+                    <TextBlock Text="通知设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 托盘通知 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="启用系统托盘通知" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="在系统托盘显示气泡通知" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkEnableTrayNotifications" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 进程启动弹窗 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="进程启动时弹窗提醒" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="检测到目标进程启动时显示确认对话框" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkShowStartupDialog" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- 监控设置 -->
+                <StackPanel x:Name="PanelMonitor" Visibility="Collapsed">
+                    <TextBlock Text="监控设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 监控间隔 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="监控检测间隔" Style="{StaticResource SettingItemTitle}"/>
+                            <TextBlock Text="系统检测进程的时间间隔（秒）" 
+                                      Style="{StaticResource SettingItemDescription}"/>
+                            
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Slider x:Name="SliderMonitorInterval" 
+                                       Minimum="1" 
+                                       Maximum="5" 
+                                       Value="1" 
+                                       TickFrequency="1"
+                                       IsSnapToTickEnabled="True"
+                                       VerticalAlignment="Center"/>
+                                
+                                <TextBlock Grid.Column="1" 
+                                          Text="{Binding Value, ElementName=SliderMonitorInterval, StringFormat={}{0:F0} 秒}" 
+                                          FontSize="13"
+                                          Foreground="#6B7280"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 启用自动操作 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="启用自动操作" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="允许系统在超时后自动挂起或终止进程" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkEnableAutoAction" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 详细日志 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="记录详细日志" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="记录更详细的系统操作和进程信息" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkEnableDetailedLogging" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- 高级设置 -->
+                <StackPanel x:Name="PanelAdvanced" Visibility="Collapsed">
+                    <TextBlock Text="高级设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 日志保留天数 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="日志保留天数" Style="{StaticResource SettingItemTitle}"/>
+                            <TextBlock Text="超过指定天数的日志将被自动删除" 
+                                      Style="{StaticResource SettingItemDescription}"/>
+                            
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Slider x:Name="SliderLogRetentionDays" 
+                                       Minimum="7" 
+                                       Maximum="90" 
+                                       Value="30" 
+                                       TickFrequency="1"
+                                       IsSnapToTickEnabled="True"
+                                       VerticalAlignment="Center"/>
+                                
+                                <TextBlock Grid.Column="1" 
+                                          Text="{Binding Value, ElementName=SliderLogRetentionDays, StringFormat={}{0:F0} 天}" 
+                                          FontSize="13"
+                                          Foreground="#6B7280"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 自动清理日志 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="自动清理日志" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="启用后将在启动时自动清理过期日志" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkAutoCleanLogs" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 检查更新 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="自动检查更新" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="启动时检查是否有新版本可用" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkCheckForUpdates" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsChecked="True"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 数据统计 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="数据统计" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="收集匿名使用数据以帮助改进应用" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkEnableAnalytics" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 重置设置 -->
+                    <Border Background="#FEF3C7" 
+                           BorderBrush="#FCD34D" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,20,0,12">
+                        <StackPanel>
+                            <TextBlock Text="⚠️ 危险操作" 
+                                      FontSize="13" 
+                                      FontWeight="SemiBold" 
+                                      Foreground="#B45309"
+                                      Margin="0,0,0,8"/>
+                            <TextBlock Text="重置所有设置将恢复到默认值，此操作不可撤销" 
+                                      FontSize="12"
+                                      Foreground="#92400E"
+                                      Margin="0,0,0,12"/>
+                            <Button Content="重置所有设置" 
+                                   Background="#DC2626" 
+                                   Foreground="White"
+                                   BorderThickness="0"
+                                   Padding="16,8"
+                                   FontSize="13"
+                                   FontWeight="Medium"
+                                   Cursor="Hand"
+                                   HorizontalAlignment="Left"
+                                   Click="ResetSettings_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                           CornerRadius="6"
+                                                           Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                                        VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#B91C1C"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 安全设置 -->
+                <StackPanel x:Name="PanelSecurity" Visibility="Collapsed">
+                    <TextBlock Text="安全设置" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 密码保护（预留功能） -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12"
+                           Opacity="0.5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel>
+                                <TextBlock Text="启用操作密码保护（即将推出）" Style="{StaticResource SettingItemTitle}"/>
+                                <TextBlock Text="执行敏感操作时需要输入密码验证" 
+                                          Style="{StaticResource SettingItemDescription}"/>
+                            </StackPanel>
+                            
+                            <CheckBox x:Name="ChkEnablePasswordProtection" 
+                                     Grid.Column="1" 
+                                     VerticalAlignment="Center"
+                                     IsEnabled="False"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- 关于 -->
+                <StackPanel x:Name="PanelAbout" Visibility="Collapsed">
+                    <TextBlock Text="关于" Style="{StaticResource SettingGroupTitle}"/>
+                    
+                    <!-- 应用信息卡片 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="12" 
+                           Padding="32"
+                           Margin="0,0,0,20">
+                        <StackPanel HorizontalAlignment="Center">
+                            <!-- 应用图标和名称 -->
+                            <Image Source="../logo.png" 
+                                  Width="80" 
+                                  Height="80" 
+                                  Margin="0,0,0,16"
+                                  HorizontalAlignment="Center"/>
+                            
+                            <TextBlock Text="StarReminder" 
+                                      FontSize="24" 
+                                      FontWeight="Bold" 
+                                      Foreground="#1F2937"
+                                      HorizontalAlignment="Center"
+                                      Margin="0,0,0,8"/>
+                            
+                            <TextBlock Text="智能进程监控与提醒系统" 
+                                      FontSize="14" 
+                                      Foreground="#6B7280"
+                                      HorizontalAlignment="Center"
+                                      Margin="0,0,0,20"/>
+                            
+                            <!-- 版本信息和更新检查 -->
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+                                    <TextBlock x:Name="TxtVersionDisplay" 
+                                              Text="版本 1.2.1" 
+                                              FontSize="12" 
+                                              Foreground="#6B7280"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0"/>
+                                    
+                                    <TextBlock Text="·" 
+                                              FontSize="12" 
+                                              Foreground="#D1D5DB"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0"/>
+                                    
+                                    <TextBlock x:Name="BtnCheckUpdate"
+                                              Text="检查更新" 
+                                              FontSize="12"
+                                              Foreground="#3B82F6"
+                                              VerticalAlignment="Center"
+                                              Cursor="Hand"
+                                              TextDecorations="Underline"
+                                              MouseLeftButtonDown="BtnCheckUpdate_Click">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                                
+                                <!-- 更新状态显示（简洁版） -->
+                                <StackPanel x:Name="UpdateStatusPanel"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Collapsed">
+                                    
+                                    <!-- 状态文字 -->
+                                    <TextBlock x:Name="TxtUpdateStatus"
+                                              Text="正在检查更新..."
+                                              FontSize="11"
+                                              Foreground="#6B7280"
+                                              HorizontalAlignment="Center"
+                                              TextWrapping="Wrap"
+                                              Margin="0,0,0,4"/>
+                                    
+                                    <!-- 子状态文字（可选） -->
+                                    <TextBlock x:Name="TxtUpdateSubStatus"
+                                              Text=""
+                                              FontSize="10"
+                                              Foreground="#9CA3AF"
+                                              HorizontalAlignment="Center"
+                                              TextWrapping="Wrap"
+                                              Visibility="Collapsed"/>
+                                    
+                                    <!-- 新版本信息 -->
+                                    <StackPanel x:Name="NewVersionPanel" 
+                                               Orientation="Horizontal"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,4,0,4"
+                                               Visibility="Collapsed">
+                                        <TextBlock x:Name="TxtCurrentVersion"
+                                                  Text="1.2.0"
+                                                  FontSize="11"
+                                                  Foreground="#6B7280"/>
+                                        <TextBlock Text=" → "
+                                                  FontSize="11"
+                                                  Foreground="#D1D5DB"/>
+                                        <TextBlock x:Name="TxtLatestVersion"
+                                                  Text="1.3.0"
+                                                  FontSize="11"
+                                                  Foreground="#10B981"
+                                                  FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    
+                                    <!-- 下载链接 -->
+                                    <TextBlock x:Name="BtnDownloadUpdate"
+                                              Text="下载更新"
+                                              FontSize="11"
+                                              Foreground="#3B82F6"
+                                              HorizontalAlignment="Center"
+                                              Cursor="Hand"
+                                              TextDecorations="Underline"
+                                              Visibility="Collapsed"
+                                              MouseLeftButtonDown="BtnDownloadUpdate_Click">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- 开发者信息 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="👨‍💻 开发者" 
+                                          FontSize="13" 
+                                          FontWeight="Medium" 
+                                          Foreground="#6B7280"
+                                          Margin="0,0,0,4"/>
+                                <TextBlock Text="StarReminder Team" 
+                                          FontSize="13" 
+                                          Foreground="#374151"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="📅 发布日期" 
+                                          FontSize="13" 
+                                          FontWeight="Medium" 
+                                          Foreground="#6B7280"
+                                          Margin="0,0,0,4"/>
+                                <TextBlock Text="2025" 
+                                          FontSize="13" 
+                                          Foreground="#374151"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- GitHub链接 -->
+                    <Border Background="White" 
+                           BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="20"
+                           Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="🔗 开源项目" 
+                                      FontSize="13" 
+                                      FontWeight="Medium" 
+                                      Foreground="#6B7280"
+                                      Margin="0,0,0,8"/>
+                            
+                            <Button x:Name="BtnGitHub"
+                                   Content="访问 GitHub 仓库" 
+                                   Height="36"
+                                   Background="#24292F"
+                                   Foreground="White"
+                                   BorderThickness="0"
+                                   FontSize="13"
+                                   Cursor="Hand"
+                                   Click="BtnGitHub_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                           CornerRadius="6"
+                                                           Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                                        VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#333A42"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- 版权信息 -->
+                <Border Background="#F9FAFB" 
+                       BorderBrush="#E5E7EB" 
+                           BorderThickness="1" 
+                           CornerRadius="8" 
+                           Padding="16"
+                           Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="© 2025 StarReminder. All rights reserved." 
+                                      FontSize="12" 
+                                      Foreground="#6B7280"
+                                      HorizontalAlignment="Center"
+                                      Margin="0,0,0,4"/>
+                            <TextBlock Text="Licensed under MIT License" 
+                                      FontSize="12" 
+                                      Foreground="#9CA3AF"
+                                      HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 底部按钮 -->
+                <Border Background="Transparent" 
+                       BorderThickness="0" 
+                       Padding="0,24,0,0"
+                       Margin="0,32,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="取消" 
+                               Width="100" 
+                               Height="36"
+                               Margin="0,0,12,0"
+                               Background="White"
+                               BorderBrush="#D1D5DB"
+                               BorderThickness="1"
+                               FontSize="13"
+                               Cursor="Hand"
+                               Click="CancelButton_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                                                       BorderBrush="{TemplateBinding BorderBrush}"
+                                                       BorderThickness="{TemplateBinding BorderThickness}"
+                                                       CornerRadius="6"
+                                                       Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                    VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        
+                        <Button Content="保存设置" 
+                               Width="120" 
+                               Height="36"
+                               Background="#4F46E5"
+                               Foreground="White"
+                               BorderThickness="0"
+                               FontSize="13"
+                               FontWeight="Medium"
+                               Cursor="Hand"
+                               Click="SaveButton_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                                                       CornerRadius="6"
+                                                       Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                    VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#4338CA"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
+
