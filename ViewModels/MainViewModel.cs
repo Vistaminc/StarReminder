@@ -19,7 +19,8 @@ namespace MediaDetectionSystem.ViewModels
         private readonly ProcessMonitor _processMonitor;
         private readonly ProcessController _processController;
         private readonly Logger _logger;
-        private readonly System.Threading.Timer _timer;  // 改用后台Timer
+        private readonly System.Threading.Timer _timer;  // 后台检测Timer
+        private readonly DispatcherTimer _uiTimer;  // UI更新Timer（独立，轻量级）
         private readonly Dispatcher _dispatcher;
         private readonly Dictionary<int, DispatcherTimer> _autoResumeTimers = new();
         private readonly Dictionary<int, DateTime> _warnedProcesses = new(); // 跟踪已警告的进程
@@ -27,7 +28,6 @@ namespace MediaDetectionSystem.ViewModels
         private AlertManager? _alertManager;
         
         private bool _isChecking = false;  // 防止重入
-        private int _uiUpdateCounter = 0;  // UI更新计数器
 
         private bool _systemEnabled;
         private string _statusMessage = "系统就绪";
@@ -78,7 +78,8 @@ namespace MediaDetectionSystem.ViewModels
             
             _processMonitor.ProcessDetected += OnProcessDetected;
             _processMonitor.ProcessExceededLimit += OnProcessExceededLimit;
-            _processMonitor.ProcessNearLimit += OnProcessNearLimit;
+            // 移除即将超时的警告通知 - 用户要求不要有不必要的通知
+            // _processMonitor.ProcessNearLimit += OnProcessNearLimit;
 
             ProcessStatuses = new ObservableCollection<ProcessStatusItem>
             {
@@ -94,7 +95,8 @@ namespace MediaDetectionSystem.ViewModels
             // 不加载历史日志，每次启动都从空白开始
             // LoadRecentLogs();
 
-            // 优化：使用后台Timer而不是DispatcherTimer，避免阻塞UI
+            // 方案：分离检测和UI更新
+            // 1. 后台Timer：按用户配置的间隔检测进程（CPU密集型操作）
             var interval = _configManager.AppSettings.MonitorInterval * 1000;
             _timer = new System.Threading.Timer(
                 OnTimerTickAsync,
@@ -102,6 +104,14 @@ namespace MediaDetectionSystem.ViewModels
                 1000,  // 1秒后开始
                 interval  // 间隔
             );
+
+            // 2. UI Timer：每秒更新运行时间显示（轻量级，只做时间计算）
+            _uiTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
+            {
+                Interval = TimeSpan.FromSeconds(1)  // 固定每秒更新
+            };
+            _uiTimer.Tick += OnUiTimerTick;
+            _uiTimer.Start();
 
             StatusMessage = "✓ 系统监控已启用";
         }
@@ -175,6 +185,9 @@ namespace MediaDetectionSystem.ViewModels
                         Details = $"进程ID: {processInfo.Id}，已自动允许运行",
                         Action = "allowed"
                     });
+                    
+                    // 立即更新UI显示，不用等待UITimer
+                    UpdateProcessStatusUI();
                 }
                 // 处理进程退出
                 else if (e.Action == "Exited")
@@ -197,6 +210,9 @@ namespace MediaDetectionSystem.ViewModels
                         Details = $"进程已退出",
                         Action = "exited"
                     });
+                    
+                    // 立即更新UI显示，不用等待UITimer
+                    UpdateProcessStatusUI();
                 }
             });
         }
@@ -222,37 +238,8 @@ namespace MediaDetectionSystem.ViewModels
                     Action = "warning"
                 });
 
-                // 优化：移除烦人的弹窗，改为Toast通知（可通过配置启用）
-                if (_configManager?.AppSettings?.ShowTimeoutDialog == true)
-                {
-                    System.Windows.MessageBox.Show(
-                        $"⚠️ 进程即将超时！\n\n" +
-                        $"程序名称: {config.DisplayName}\n" +
-                        $"进程ID: {processInfo.Id}\n" +
-                        $"已运行时间: {(int)processInfo.Runtime.TotalMinutes} 分钟\n" +
-                        $"最大运行时间: {(int)config.MaxRuntime.TotalMinutes} 分钟\n" +
-                        $"剩余时间: {(int)remainingTime.TotalSeconds} 秒\n\n" +
-                        $"超时后将执行: {GetActionDisplayName(config.ActionType)}",
-                        "⚠️ 超时警告",
-                        System.Windows.MessageBoxButton.OK,
-                        System.Windows.MessageBoxImage.Warning);
-                }
-                else
-                {
-                    // 优化：使用非阻塞的Toast通知替代弹窗
-                    try
-                    {
-                        new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
-                            .AddText($"⚠️ {config.DisplayName} 即将超时")
-                            .AddText($"剩余时间: {(int)remainingTime.TotalSeconds} 秒")
-                            .AddText($"超时后将: {GetActionDisplayName(config.ActionType)}")
-                            .Show();
-                    }
-                    catch
-                    {
-                        // Toast通知失败，仅记录日志
-                    }
-                }
+                // 已移除即将超时的弹窗和Toast通知 - 用户要求不要有不必要的通知
+                // 仅保留日志记录，不显示任何用户通知
             });
         }
 
@@ -377,47 +364,51 @@ namespace MediaDetectionSystem.ViewModels
                     }
                 });
                 
-                // 优化：减少UI更新频率，每3次检测才更新一次UI
-                _uiUpdateCounter++;
-                if (_uiUpdateCounter >= 3)
-                {
-                    _uiUpdateCounter = 0;
-                    
-                    // 更新UI状态（切换回UI线程）
-                    await _dispatcher.InvokeAsync(() =>
-                    {
-                        try
-                        {
-                            UpdateProcessStatusUI();
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"[MainViewModel] UI更新错误: {ex.Message}");
-                        }
-                    }, DispatcherPriority.Background);  // 使用Background优先级，不阻塞用户操作
-                }
+                // UI更新已移到独立的UITimer中，这里不再更新UI
+                // 后台检测专注于进程检测和事件触发
             }
             finally
             {
                 _isChecking = false;
             }
         }
+
+        /// <summary>
+        /// UI定时器回调 - 每秒更新运行时间显示（轻量级，仅时间计算）
+        /// </summary>
+        private void OnUiTimerTick(object? sender, EventArgs e)
+        {
+            if (!_systemEnabled) return;
+            
+            try
+            {
+                UpdateProcessStatusUI();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainViewModel] UI更新错误: {ex.Message}");
+            }
+        }
         
         /// <summary>
-        /// 更新进程状态UI（仅在UI线程调用）
+        /// 更新进程状态UI（轻量级，仅计算运行时间）
         /// </summary>
         private void UpdateProcessStatusUI()
         {
+            // 轻量级操作：只遍历UI列表和监控字典，不涉及进程枚举
             foreach (var status in ProcessStatuses)
             {
+                // 快速查找对应的进程信息
                 var runningProcess = _processMonitor.MonitoredProcesses.Values
                     .FirstOrDefault(p => p.Name.Equals(System.IO.Path.GetFileNameWithoutExtension(status.ProcessName), 
                         StringComparison.OrdinalIgnoreCase));
 
+                // 更新运行状态和时间
                 status.IsRunning = runningProcess != null;
 
                 if (status.IsRunning && runningProcess != null)
                 {
+                    // 仅做简单的时间计算，非常轻量
                     var runTime = (int)runningProcess.Runtime.TotalSeconds;
                     status.RunTime = runTime;
                 }

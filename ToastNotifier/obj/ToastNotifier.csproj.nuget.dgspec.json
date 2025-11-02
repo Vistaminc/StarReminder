@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\ToastNotifier\\ToastNotifier.csproj": {}
+    "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\ToastNotifier\\ToastNotifier.csproj": {}
   },
   "projects": {
-    "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\ToastNotifier\\ToastNotifier.csproj": {
+    "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\ToastNotifier\\ToastNotifier.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\ToastNotifier\\ToastNotifier.csproj",
+        "projectUniqueName": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\ToastNotifier\\ToastNotifier.csproj",
         "projectName": "ToastNotifier",
-        "projectPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\ToastNotifier\\ToastNotifier.csproj",
+        "projectPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\ToastNotifier\\ToastNotifier.csproj",
         "packagesPath": "C:\\Users\\Qutanfang\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\ToastNotifier\\obj\\",
+        "outputPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\ToastNotifier\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

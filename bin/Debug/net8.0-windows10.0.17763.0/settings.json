@@ -1,0 +1,17 @@
+{
+  "startWithWindows": false,
+  "startMinimized": false,
+  "themeMode": "Light",
+  "enableTrayNotifications": true,
+  "showStartupDialog": true,
+  "showTimeoutDialog": false,
+  "monitorInterval": 1,
+  "enableAutoAction": true,
+  "enableDetailedLogging": true,
+  "logRetentionDays": 30,
+  "autoCleanLogs": true,
+  "checkForUpdates": true,
+  "enableAnalytics": false,
+  "enablePasswordProtection": false,
+  "passwordHash": ""
+}

@@ -1,0 +1,49 @@
+{
+  "processConfigs": {
+    "media_capture.exe": {
+      "processName": "media_capture.exe",
+      "displayName": "\u6444\u50CF\u5934\u6355\u83B7",
+      "description": "\u7528\u4E8E\u6355\u83B7\u6444\u50CF\u5934\u548C\u9EA6\u514B\u98CE\u5185\u5BB9\u7684\u5E94\u7528",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Suspend",
+      "autoResumeAfter": "00:05:00",
+      "alertBeforeAction": 30,
+      "alertConfig": null
+    },
+    "screenCapture.exe": {
+      "processName": "screenCapture.exe",
+      "displayName": "\u5C4F\u5E55\u6355\u83B7",
+      "description": "\u7528\u4E8E\u6355\u83B7\u5C4F\u5E55\u5F53\u524D\u663E\u793A\u7684\u5185\u5BB9",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Suspend",
+      "autoResumeAfter": "00:05:00",
+      "alertBeforeAction": 30,
+      "alertConfig": null
+    },
+    "rtcRemoteDesktop.exe": {
+      "processName": "rtcRemoteDesktop.exe",
+      "displayName": "\u8FDC\u7A0B\u684C\u9762",
+      "description": "\u7528\u4E8E\u5BF9\u8BE5\u7535\u8111\u8FDB\u884C\u8FDC\u7A0B\u63A7\u5236",
+      "isEnabled": true,
+      "maxRuntime": "00:30:00",
+      "actionType": "Terminate",
+      "autoResumeAfter": "00:00:00",
+      "alertBeforeAction": 30,
+      "alertConfig": null
+    }
+  },
+  "alertConfig": {
+    "notificationType": "Defender",
+    "enableStartupNotification": true,
+    "notificationTitle": "StarReminder - \u8FDB\u7A0B\u76D1\u63A7",
+    "notificationMessage": "\u68C0\u6D4B\u5230\u53D7\u76D1\u63A7\u8FDB\u7A0B\n{DisplayName}",
+    "enableContinuousAlert": true,
+    "watermarkText1": "\u6FC0\u6D3B Windows",
+    "watermarkText2": "\u8F6C\u5230\u0022\u8BBE\u7F6E\u0022\u4EE5\u6FC0\u6D3B Windows\u3002",
+    "watermarkPosition": "BottomRight",
+    "continuousAlertUntil": "ProcessEnd",
+    "logCleanupDays": 30
+  }
+}

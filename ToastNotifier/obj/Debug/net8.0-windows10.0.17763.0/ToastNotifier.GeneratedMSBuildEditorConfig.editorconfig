@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ToastNotifier
-build_property.ProjectDir = D:\Users\program\SeewoTool\StarReminder\StarReminder\C#\MediaDetectionSystem\ToastNotifier\
+build_property.ProjectDir = D:\Users\program\SeewoTool\StarReminder\StarReminder\C#\StarReminder\ToastNotifier\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

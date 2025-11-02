@@ -1,0 +1,101 @@
+[
+  {
+    "timestamp": "2025-11-01T22:36:54.5113247+08:00",
+    "eventType": "",
+    "action": "config_change",
+    "processName": "media_capture.exe",
+    "pid": null,
+    "details": "\u914D\u7F6E\u5DF2\u66F4\u65B0: \u542F\u7528=True, \u65F6\u9650=30\u5206\u949F",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:37:34.2494481+08:00",
+    "eventType": "",
+    "action": "started",
+    "processName": "screenCapture",
+    "pid": null,
+    "details": "\u8FDB\u7A0BID: 40668\uFF0C\u5DF2\u81EA\u52A8\u5141\u8BB8\u8FD0\u884C",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:37:44.1741593+08:00",
+    "eventType": "",
+    "action": "exited",
+    "processName": "screenCapture",
+    "pid": null,
+    "details": "\u8FDB\u7A0BID: 40668\uFF0C\u5DF2\u9000\u51FA",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:44:43.3929009+08:00",
+    "eventType": "",
+    "action": "started",
+    "processName": "media_capture",
+    "pid": null,
+    "details": "\u8FDB\u7A0BID: 30496\uFF0C\u5DF2\u81EA\u52A8\u5141\u8BB8\u8FD0\u884C",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:44:57.8177871+08:00",
+    "eventType": "",
+    "action": "config_change",
+    "processName": "media_capture.exe",
+    "pid": null,
+    "details": "\u914D\u7F6E\u5DF2\u66F4\u65B0: \u542F\u7528=True, \u65F6\u9650=1\u5206\u949F",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:45:14.7316018+08:00",
+    "eventType": "",
+    "action": "warning",
+    "processName": "media_capture",
+    "pid": null,
+    "details": "\u5373\u5C06\u8D85\u65F6 PID:30496, \u5269\u4F59\u65F6\u95F4:28.5434244\u79D2",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:45:44.7162755+08:00",
+    "eventType": "",
+    "action": "exceeded_limit",
+    "processName": "media_capture",
+    "pid": null,
+    "details": "\u8D85\u51FA\u65F6\u9650 PID:30496, \u6700\u5927\u8FD0\u884C\u65F6\u95F4:1\u5206\u949F",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:45:44.7454051+08:00",
+    "eventType": "",
+    "action": "suspended",
+    "processName": "media_capture",
+    "pid": null,
+    "details": "\u8FDB\u7A0B\u5DF2\u6302\u8D77 PID:30496",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:49:53.4742741+08:00",
+    "eventType": "",
+    "action": "config_change",
+    "processName": "media_capture.exe",
+    "pid": null,
+    "details": "\u914D\u7F6E\u5DF2\u66F4\u65B0: \u542F\u7528=True, \u65F6\u9650=1\u5206\u949F",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:50:44.7621768+08:00",
+    "eventType": "",
+    "action": "resumed",
+    "processName": "media_capture",
+    "pid": null,
+    "details": "\u8FDB\u7A0B\u5DF2\u81EA\u52A8\u6062\u590D PID:30496",
+    "userAction": ""
+  },
+  {
+    "timestamp": "2025-11-01T22:51:05.1740379+08:00",
+    "eventType": "",
+    "action": "config_change",
+    "processName": "media_capture.exe",
+    "pid": null,
+    "details": "\u914D\u7F6E\u5DF2\u66F4\u65B0: \u542F\u7528=True, \u65F6\u9650=1\u5206\u949F",
+    "userAction": ""
+  }
+]

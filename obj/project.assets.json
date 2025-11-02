@@ -555,11 +555,11 @@
   "project": {
     "version": "1.2.1",
     "restore": {
-      "projectUniqueName": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\MediaDetectionSystem.csproj",
+      "projectUniqueName": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\MediaDetectionSystem.csproj",
       "projectName": "StarReminder",
-      "projectPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\MediaDetectionSystem.csproj",
+      "projectPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\MediaDetectionSystem.csproj",
       "packagesPath": "C:\\Users\\Qutanfang\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\MediaDetectionSystem\\obj\\",
+      "outputPath": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -633,5 +633,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "获取包漏洞数据时出错: 无法加载源 https://api.nuget.org/v3/index.json 的服务索引。"
+    }
+  ]
 }
