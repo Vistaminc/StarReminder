@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ToastNotifier")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b72e2406f5eaef637527b26c36b4dcd83d251e71")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c783fea3838640667f002aa70d04b8f014c4f95")]
 [assembly: System.Reflection.AssemblyProductAttribute("ToastNotifier")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ToastNotifier")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

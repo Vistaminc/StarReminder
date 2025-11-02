@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MediaDetectionSystem.Services
 {
@@ -22,9 +24,10 @@ namespace MediaDetectionSystem.Services
     /// </summary>
     public class MediaDeviceMonitor
     {
-        private readonly Dictionary<int, MediaDeviceUsage> _deviceUsageCache = new();
+        private readonly ConcurrentDictionary<int, MediaDeviceUsage> _deviceUsageCache = new();
         private DateTime _lastFullScan = DateTime.MinValue;
         private const int FULL_SCAN_INTERVAL_SECONDS = 5; // 完整扫描间隔：5秒
+        private readonly object _scanLock = new object();
 
         /// <summary>
         /// 获取所有正在使用摄像头或麦克风的进程列表（从设备角度检测）
@@ -35,25 +38,32 @@ namespace MediaDetectionSystem.Services
 
             try
             {   
-                // 方法1：优先使用注册表检测（性能更好）
-                var cameraUsers = GetDeviceUsers("webcam", true);
-                var microphoneUsers = GetDeviceUsers("microphone", false);
+                // 方法1：优先使用注册表检测（性能更好）- 并行检测摄像头和麦克风
+                List<MediaDeviceUsage> cameraUsers = new();
+                List<MediaDeviceUsage> microphoneUsers = new();
+                
+                Parallel.Invoke(
+                    () => cameraUsers = GetDeviceUsers("webcam", true),
+                    () => microphoneUsers = GetDeviceUsers("microphone", false)
+                );
 
                 // 优化：只在必要时且满足间隔时使用备用方法
                 var timeSinceLastFullScan = (DateTime.Now - _lastFullScan).TotalSeconds;
-                if (cameraUsers.Count == 0 && microphoneUsers.Count == 0 && 
-                    timeSinceLastFullScan >= FULL_SCAN_INTERVAL_SECONDS)
+                if (cameraUsers.Count == 0 && microphoneUsers.Count == 0)
                 {
-                    Debug.WriteLine("[MediaDeviceMonitor] 注册表未检测到，使用备用方法（上次完整扫描：{0}秒前）", 
-                        (int)timeSinceLastFullScan);
-                    var handleBasedUsers = GetDeviceUsersByHandles();
-                    activeUsers.AddRange(handleBasedUsers);
-                    _lastFullScan = DateTime.Now;
-                }
-                else if (cameraUsers.Count == 0 && microphoneUsers.Count == 0 && timeSinceLastFullScan < FULL_SCAN_INTERVAL_SECONDS)
-                {
-                    // 优化：使用缓存结果，避免频繁的完整扫描
-                    return _deviceUsageCache.Values.ToList();
+                    if (timeSinceLastFullScan >= FULL_SCAN_INTERVAL_SECONDS)
+                    {
+                        Debug.WriteLine("[MediaDeviceMonitor] 注册表未检测到，使用备用方法（上次完整扫描：{0}秒前）", 
+                            (int)timeSinceLastFullScan);
+                        var handleBasedUsers = GetDeviceUsersByHandles();
+                        activeUsers.AddRange(handleBasedUsers);
+                        _lastFullScan = DateTime.Now;
+                    }
+                    else
+                    {
+                        // 优化：使用缓存结果，避免频繁的完整扫描
+                        return _deviceUsageCache.Values.ToList();
+                    }
                 }
                 else
                 {
@@ -106,25 +116,21 @@ namespace MediaDetectionSystem.Services
         
         /// <summary>
         /// 通过检查进程句柄来检测摄像头/麦克风使用（备用方法）
-        /// 优化：减少扫描范围，提高性能
+        /// 优化：使用并行扫描，提高性能
         /// </summary>
         private List<MediaDeviceUsage> GetDeviceUsersByHandles()
         {
-            var users = new List<MediaDeviceUsage>();
+            var users = new ConcurrentBag<MediaDeviceUsage>();
             
             try
             {
-                // 优化：减少调试输出
-                // Debug.WriteLine("[MediaDeviceMonitor] Checking processes for media device handles...");
-                
                 var allProcesses = System.Diagnostics.Process.GetProcesses();
                 
-                // 优化：使用 Parallel 提高性能（小心线程安全）
+                // 优化：过滤掉系统进程，减少扫描
                 var processesToCheck = allProcesses.Where(p => 
                 {
                     try
                     {
-                        // 优化：跳过系统关键进程，减少扫描
                         var name = p.ProcessName.ToLower();
                         return !name.StartsWith("system") && 
                                !name.StartsWith("svchost") && 
@@ -137,26 +143,24 @@ namespace MediaDetectionSystem.Services
                     }
                 }).ToList();
                 
-                foreach (var process in processesToCheck)
+                // 多线程并行扫描进程
+                Parallel.ForEach(processesToCheck, new ParallelOptions { MaxDegreeOfParallelism = 4 }, process =>
                 {
                     try
                     {
-                        // 优化：快速检查，找到一个就停止
                         bool hasCamera = false;
                         bool hasMicrophone = false;
                         
-                        // 优化：限制模块检查数量
                         int moduleCount = 0;
-                        const int MAX_MODULES_TO_CHECK = 50; // 只检查前50个模块
+                        const int MAX_MODULES_TO_CHECK = 50;
                         
                         foreach (ProcessModule module in process.Modules)
                         {
                             if (++moduleCount > MAX_MODULES_TO_CHECK && (hasCamera || hasMicrophone))
-                                break; // 优化：已经找到了就提前退出
+                                break;
                             
                             string moduleName = module.ModuleName.ToLower();
                             
-                            // 优化：使用更精确的匹配，减少字符串比较
                             if (!hasCamera && (moduleName.Contains("mfreadwrite") || 
                                 moduleName.Contains("mfplat") ||
                                 moduleName.Contains("ksproxy")))
@@ -170,7 +174,6 @@ namespace MediaDetectionSystem.Services
                                 hasMicrophone = true;
                             }
                             
-                            // 优化：找到两个就可以退出了
                             if (hasCamera && hasMicrophone)
                                 break;
                         }
@@ -192,14 +195,18 @@ namespace MediaDetectionSystem.Services
                     {
                         // 无法访问某些进程，忽略
                     }
-                }
+                    finally
+                    {
+                        try { process.Dispose(); } catch { }
+                    }
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[MediaDeviceMonitor] 句柄检测错误: {ex.Message}");
             }
             
-            return users;
+            return users.ToList();
         }
 
         private DateTime _lastRegistryCheck = DateTime.MinValue;
@@ -275,29 +282,30 @@ namespace MediaDetectionSystem.Services
                                             // 优化：直接获取进程，减少查询次数
                                             var matchingProcesses = System.Diagnostics.Process.GetProcessesByName(processName);
                                             
-                                            if (matchingProcesses.Length > 0)
-                                            {
-                                                foreach (var proc in matchingProcesses)
-                                                {
-                                                    try
-                                                    {
-                                                        users.Add(new MediaDeviceUsage
-                                                        {
-                                                            ProcessId = proc.Id,
-                                                            ProcessName = proc.ProcessName,
-                                                            IsCameraInUse = isCamera,
-                                                            IsMicrophoneInUse = !isCamera
-                                                        });
-                                                        
-                                                        // 优化：只在发现时输出
-                                                        Debug.WriteLine($"[MediaDeviceMonitor] {proc.ProcessName} (ID:{proc.Id}) 使用 {(isCamera ? "摄像头" : "麦克风")}");
-                                                    }
-                                                    catch
-                                                    {
-                                                        // 忽略无法访问的进程
-                                                    }
-                                                }
-                                            }
+                            if (matchingProcesses.Length > 0)
+                            {
+                                foreach (var proc in matchingProcesses)
+                                {
+                                    try
+                                    {
+                                        users.Add(new MediaDeviceUsage
+                                        {
+                                            ProcessId = proc.Id,
+                                            ProcessName = proc.ProcessName,
+                                            IsCameraInUse = isCamera,
+                                            IsMicrophoneInUse = !isCamera
+                                        });
+                                        
+                                        // 优化：只在发现时输出
+                                        Debug.WriteLine($"[MediaDeviceMonitor] {proc.ProcessName} (ID:{proc.Id}) 使用 {(isCamera ? "摄像头" : "麦克风")}");
+                                        proc.Dispose();
+                                    }
+                                    catch
+                                    {
+                                        // 忽略无法访问的进程
+                                    }
+                                }
+                            }
                                         }
                                         catch
                                         {
@@ -354,7 +362,7 @@ namespace MediaDetectionSystem.Services
                 }
 
                 // 如果没有使用，从缓存中移除
-                _deviceUsageCache.Remove(processId);
+                _deviceUsageCache.TryRemove(processId, out _);
                 return null;
             }
             catch (Exception ex)
@@ -580,7 +588,7 @@ namespace MediaDetectionSystem.Services
         /// </summary>
         public void CleanupExitedProcess(int processId)
         {
-            _deviceUsageCache.Remove(processId);
+            _deviceUsageCache.TryRemove(processId, out _);
         }
 
         /// <summary>

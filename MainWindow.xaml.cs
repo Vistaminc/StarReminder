@@ -28,19 +28,19 @@ public partial class MainWindow : Window
             _viewModel = new MainViewModel();
             DataContext = _viewModel;
             
-            // 订阅日志条目变化事件，自动滚动到最新
+            // 订阅日志条目变化事件，自动滚动到最新（优化：降低优先级，避免阻塞UI）
             _viewModel.LogEntries.CollectionChanged += (s, e) =>
             {
                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
-                    // 在UI线程上执行滚动
+                    // 使用更低的优先级，避免阻塞UI主线程
                     Dispatcher.BeginInvoke(new System.Action(() =>
                     {
                         if (LogListBox != null && LogListBox.Items.Count > 0)
                         {
                             LogListBox.ScrollIntoView(LogListBox.Items[LogListBox.Items.Count - 1]);
                         }
-                    }), System.Windows.Threading.DispatcherPriority.Loaded);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle); // 改用ApplicationIdle优先级
                 }
             };
             
@@ -363,6 +363,9 @@ public partial class MainWindow : Window
                     _notifyIcon.Visible = false;
                     _notifyIcon.Dispose();
                 }
+                
+                // 清理ViewModel资源
+                _viewModel?.Cleanup();
             }
             
             base.OnClosing(e);

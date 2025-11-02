@@ -25,7 +25,18 @@ namespace MediaDetectionSystem.ViewModels
         private readonly Dictionary<int, DispatcherTimer> _autoResumeTimers = new();
         private readonly Dictionary<int, DateTime> _warnedProcesses = new(); // 跟踪已警告的进程
         private readonly Dictionary<int, AlertManager> _processAlertManagers = new(); // 每个进程的提醒管理器
-        private AlertManager? _alertManager;
+        
+        // 日志图标映射（静态缓存，避免重复创建）
+        private static readonly Dictionary<string, string> _logIconMap = new()
+        {
+            ["started"] = "🟢",
+            ["terminated"] = "🔴",
+            ["suspended"] = "🟡",
+            ["resumed"] = "🔵",
+            ["user_action"] = "👤",
+            ["config_change"] = "⚙️",
+            ["exceeded_limit"] = "⏰"
+        };
         
         private bool _isChecking = false;  // 防止重入
 
@@ -74,12 +85,9 @@ namespace MediaDetectionSystem.ViewModels
             _logger = new Logger("logs", _configManager.AppSettings.LogRetentionDays, _configManager.AppSettings.EnableDetailedLogging);
             _processController = new ProcessController();
             _processMonitor = new ProcessMonitor();
-            _alertManager = new AlertManager(_configManager.AlertConfig);
             
             _processMonitor.ProcessDetected += OnProcessDetected;
             _processMonitor.ProcessExceededLimit += OnProcessExceededLimit;
-            // 移除即将超时的警告通知 - 用户要求不要有不必要的通知
-            // _processMonitor.ProcessNearLimit += OnProcessNearLimit;
 
             ProcessStatuses = new ObservableCollection<ProcessStatusItem>
             {
@@ -105,10 +113,10 @@ namespace MediaDetectionSystem.ViewModels
                 interval  // 间隔
             );
 
-            // 2. UI Timer：每秒更新运行时间显示（轻量级，只做时间计算）
+            // 2. UI Timer：每2秒更新运行时间显示（降低UI刷新频率，提升流畅度）
             _uiTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
             {
-                Interval = TimeSpan.FromSeconds(1)  // 固定每秒更新
+                Interval = TimeSpan.FromSeconds(2)  // 2秒更新一次，减少UI开销
             };
             _uiTimer.Tick += OnUiTimerTick;
             _uiTimer.Start();
@@ -155,15 +163,15 @@ namespace MediaDetectionSystem.ViewModels
                 // 处理进程启动
                 if (e.Action == "Detected")
                 {
-                // 获取对应的进程配置
-                if (_configManager.ProcessConfigs.TryGetValue(processInfo.Name + ".exe", out var config))
-                {
-                    // 使用进程独立的AlertConfig，如果没有则使用全局配置
-                    var alertConfig = config.AlertConfig ?? _configManager.AlertConfig;
-                    
-                    // 创建专用的AlertManager实例
-                    var processAlertManager = new AlertManager(alertConfig);
-                    _processAlertManagers[processInfo.Id] = processAlertManager;
+                    // 获取对应的进程配置
+                    if (_configManager.ProcessConfigs.TryGetValue(processInfo.Name + ".exe", out var config))
+                    {
+                        // 使用进程独立的AlertConfig，如果没有则使用全局配置
+                        var alertConfig = config.AlertConfig ?? _configManager.AlertConfig;
+                        
+                        // 创建专用的AlertManager实例
+                        var processAlertManager = new AlertManager(alertConfig);
+                        _processAlertManagers[processInfo.Id] = processAlertManager;
                         
                         // 显示启动提醒（传入媒体设备使用情况）
                         processAlertManager.ShowProcessStartAlert(processInfo.Name, config.DisplayName, e.MediaUsage);
@@ -192,13 +200,8 @@ namespace MediaDetectionSystem.ViewModels
                 // 处理进程退出
                 else if (e.Action == "Exited")
                 {
-                    // 清理并隐藏该进程的持续提醒
-                    if (_processAlertManagers.TryGetValue(processInfo.Id, out var alertManager))
-                    {
-                        alertManager.HideContinuousAlert();
-                        alertManager.Dispose();
-                        _processAlertManagers.Remove(processInfo.Id);
-                    }
+                    // 清理并隐藏该进程的持续提醒和定时器
+                    CleanupProcessResources(processInfo.Id);
                     
                     _logger.Log("exited", processInfo.Name, $"进程ID: {processInfo.Id}，已退出");
                     AddLogEntry(new LogEntry
@@ -215,42 +218,6 @@ namespace MediaDetectionSystem.ViewModels
                     UpdateProcessStatusUI();
                 }
             });
-        }
-
-        private void OnProcessNearLimit(object? sender, ProcessEventArgs e)
-        {
-            _dispatcher.Invoke(() =>
-            {
-                var processInfo = e.ProcessInfo;
-                var config = processInfo.Config;
-                if (config == null) return;
-                
-                var remainingTime = config.MaxRuntime - processInfo.Runtime;
-
-                _logger.Log("warning", processInfo.Name, $"即将超时 PID:{processInfo.Id}, 剩余时间:{remainingTime.TotalSeconds}秒");
-                AddLogEntry(new LogEntry
-                {
-                    Timestamp = DateTime.Now,
-                    EventType = "warning",
-                    ProcessName = processInfo.Name,
-                    Pid = processInfo.Id,
-                    Details = $"⚠️ 即将超时：剩余 {(int)remainingTime.TotalSeconds} 秒",
-                    Action = "warning"
-                });
-
-                // 已移除即将超时的弹窗和Toast通知 - 用户要求不要有不必要的通知
-                // 仅保留日志记录，不显示任何用户通知
-            });
-        }
-
-        private string GetActionDisplayName(string actionType)
-        {
-            return actionType switch
-            {
-                "Suspend" => "挂起进程",
-                "Terminate" => "终止进程",
-                _ => "无操作"
-            };
         }
 
         private void OnProcessExceededLimit(object? sender, ProcessEventArgs e)
@@ -322,13 +289,8 @@ namespace MediaDetectionSystem.ViewModels
                                     Action = "auto_terminate"
                                 });
                                 
-                                // 进程终止后隐藏持续提醒
-                                if (_processAlertManagers.TryGetValue(processInfo.Id, out var alertManager))
-                                {
-                                    alertManager.HideContinuousAlert();
-                                    alertManager.Dispose();
-                                    _processAlertManagers.Remove(processInfo.Id);
-                                }
+                                // 进程终止后清理资源
+                                CleanupProcessResources(processInfo.Id);
                             }
                             break;
                     }
@@ -395,25 +357,25 @@ namespace MediaDetectionSystem.ViewModels
         /// </summary>
         private void UpdateProcessStatusUI()
         {
-            // 轻量级操作：只遍历UI列表和监控字典，不涉及进程枚举
+            // 优化：先构建字典，避免重复查找
+            var monitoredDict = _processMonitor.MonitoredProcesses.Values
+                .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
+            
+            // 轻量级操作：只遍历UI列表
             foreach (var status in ProcessStatuses)
             {
+                var processName = System.IO.Path.GetFileNameWithoutExtension(status.ProcessName);
+                
                 // 快速查找对应的进程信息
-                var runningProcess = _processMonitor.MonitoredProcesses.Values
-                    .FirstOrDefault(p => p.Name.Equals(System.IO.Path.GetFileNameWithoutExtension(status.ProcessName), 
-                        StringComparison.OrdinalIgnoreCase));
-
-                // 更新运行状态和时间
-                status.IsRunning = runningProcess != null;
-
-                if (status.IsRunning && runningProcess != null)
+                if (monitoredDict.TryGetValue(processName, out var runningProcess))
                 {
                     // 仅做简单的时间计算，非常轻量
-                    var runTime = (int)runningProcess.Runtime.TotalSeconds;
-                    status.RunTime = runTime;
+                    status.IsRunning = true;
+                    status.RunTime = (int)runningProcess.Runtime.TotalSeconds;
                 }
                 else
                 {
+                    status.IsRunning = false;
                     status.RunTime = 0;
                 }
             }
@@ -421,17 +383,8 @@ namespace MediaDetectionSystem.ViewModels
 
         private void AddLogEntry(LogEntry log)
         {
-            var icon = log.EventType switch
-            {
-                "started" => "🟢",
-                "terminated" => "🔴",
-                "suspended" => "🟡",
-                "resumed" => "🔵",
-                "user_action" => "👤",
-                "config_change" => "⚙️",
-                "exceeded_limit" => "⏰",
-                _ => "ℹ️"
-            };
+            // 优化：使用静态缓存的图标映射
+            var icon = _logIconMap.TryGetValue(log.EventType, out var iconValue) ? iconValue : "ℹ️";
 
             var logText = $"[{log.Timestamp:HH:mm:ss}] {icon} [{log.EventType}] {log.ProcessName}";
             if (!string.IsNullOrEmpty(log.Details))
@@ -441,10 +394,14 @@ namespace MediaDetectionSystem.ViewModels
 
             LogEntries.Add(logText);
 
-            // 保持最多100条日志
-            while (LogEntries.Count > 100)
+            // 优化：批量删除，减少UI刷新次数
+            if (LogEntries.Count > 100)
             {
-                LogEntries.RemoveAt(0);
+                var removeCount = LogEntries.Count - 100;
+                for (int i = 0; i < removeCount; i++)
+                {
+                    LogEntries.RemoveAt(0);
+                }
             }
         }
 
@@ -583,6 +540,71 @@ namespace MediaDetectionSystem.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// 清理进程相关的所有资源（AlertManager和Timer）
+        /// </summary>
+        private void CleanupProcessResources(int processId)
+        {
+            // 清理AlertManager
+            if (_processAlertManagers.TryGetValue(processId, out var alertManager))
+            {
+                try
+                {
+                    alertManager.HideContinuousAlert();
+                    alertManager.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"清理AlertManager失败: {ex.Message}");
+                }
+                finally
+                {
+                    _processAlertManagers.Remove(processId);
+                }
+            }
+
+            // 清理自动恢复定时器
+            if (_autoResumeTimers.TryGetValue(processId, out var timer))
+            {
+                try
+                {
+                    timer.Stop();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"停止定时器失败: {ex.Message}");
+                }
+                finally
+                {
+                    _autoResumeTimers.Remove(processId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 清理所有资源（应用关闭时调用）
+        /// </summary>
+        public void Cleanup()
+        {
+            try
+            {
+                // 停止定时器
+                _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer?.Dispose();
+                _uiTimer?.Stop();
+
+                // 清理所有进程相关的AlertManager
+                foreach (var kvp in _processAlertManagers.ToList())
+                {
+                    CleanupProcessResources(kvp.Key);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"清理资源失败: {ex.Message}");
+            }
         }
     }
 

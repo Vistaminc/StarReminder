@@ -432,8 +432,8 @@ docs/
 
 ### 遇到问题？
 
-- 💬 在 [Discussions](https://github.com/yourusername/StarReminder/discussions) 提问
-- 📮 查看 [Issues](https://github.com/yourusername/StarReminder/issues)
+- 💬 在 [Discussions](https://github.com/vistaminc/StarReminder/discussions) 提问
+- 📮 查看 [Issues](https://github.com/vistaminc/StarReminder/issues)
 - 📧 联系维护者
 
 ### 沟通渠道

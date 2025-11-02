@@ -12,9 +12,9 @@
     <Product>StarReminder - 进程监控提醒工具</Product>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
     <Company>StarReminder Team</Company>
     <Copyright>Copyright © 2025</Copyright>
     <Description>智能进程监控和提醒系统</Description>

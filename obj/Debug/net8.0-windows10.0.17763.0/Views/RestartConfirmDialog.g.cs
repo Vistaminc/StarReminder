@@ -76,7 +76,7 @@ namespace MediaDetectionSystem.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/StarReminder;V1.2.1.0;component/views/restartconfirmdialog.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/StarReminder;V1.2.2.0;component/views/restartconfirmdialog.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\RestartConfirmDialog.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

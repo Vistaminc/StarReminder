@@ -146,7 +146,7 @@ docs/
 
 1. 查看 [使用教程 - 故障排除](usage.md#-故障排除)
 2. 查看 [安装指南 - 安装故障排除](installation.md#-安装故障排除)
-3. 查看 GitHub [Issues](https://github.com/yourusername/StarReminder/issues)
+3. 查看 GitHub [Issues](https://github.com/vistaminc/StarReminder/issues)
 4. 提交新的 Issue
 
 ### 我想参与开发
@@ -206,8 +206,8 @@ docs/
 - ❌ 令人困惑的描述
 
 请：
-1. 提交 [Issue](https://github.com/yourusername/StarReminder/issues)
-2. 或直接提交 [Pull Request](https://github.com/yourusername/StarReminder/pulls)
+1. 提交 [Issue](https://github.com/vistaminc/StarReminder/issues)
+2. 或直接提交 [Pull Request](https://github.com/vistaminc/StarReminder/pulls)
 
 ---
 
@@ -227,9 +227,9 @@ docs/
 
 ## 📧 联系我们
 
-- 📮 GitHub Issues: [提交问题](https://github.com/yourusername/StarReminder/issues)
-- 📘 Wiki: [查看 Wiki](https://github.com/yourusername/StarReminder/wiki)
-- 💬 讨论区: [参与讨论](https://github.com/yourusername/StarReminder/discussions)
+- 📮 GitHub Issues: [提交问题](https://github.com/vistaminc/StarReminder/issues)
+- 📘 Wiki: [查看 Wiki](https://github.com/vistaminc/StarReminder/wiki)
+- 💬 讨论区: [参与讨论](https://github.com/vistaminc/StarReminder/discussions)
 
 ---
 

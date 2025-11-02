@@ -58,7 +58,7 @@ dotnet --version
 
 ```powershell
 # 克隆主仓库
-git clone https://github.com/yourusername/StarReminder.git
+git clone https://github.com/vistaminc/StarReminder.git
 cd StarReminder
 
 # 进入项目目录

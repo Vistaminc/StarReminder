@@ -2,6 +2,7 @@ using System;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using MediaDetectionSystem.Models;
 using Application = System.Windows.Application;
@@ -16,10 +17,21 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace MediaDetectionSystem.Services
 {
-    public class AlertManager
+    public class AlertManager : IDisposable
     {
         private readonly AlertConfig _config;
         private Window? _watermarkWindow;
+        private bool _disposed = false;
+
+        // Win32 API：设置窗口层级
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_SHOWWINDOW = 0x0040;
 
         public AlertManager(AlertConfig config)
         {
@@ -154,11 +166,12 @@ namespace MediaDetectionSystem.Services
                     return;
                 }
                 
-                // 构建命令行参数
+                // 构建命令行参数（添加1秒自动关闭）
                 var arguments = $"-title \"{title}\" " +
                                $"-message \"{message}\" " +
                                $"-appid \"StarReminder.SecurityCenter\" " +
-                               $"-appname \"Windows 安全中心\"";
+                               $"-appname \"Windows 安全中心\" " +
+                               $"-duration \"1\"";  // 1秒后自动关闭
                 
                 // 如果 defender.png 存在，添加图标参数
                 if (System.IO.File.Exists(defenderIconPath))
@@ -259,24 +272,24 @@ namespace MediaDetectionSystem.Services
                 Background = System.Windows.Media.Brushes.Transparent
             };
 
-            // 第一行文字 - 与Windows激活水印完全一致
+            // 第一行文字 - 30%不透明度
             var text1 = new System.Windows.Controls.TextBlock
             {
                 Text = _config.WatermarkText1,
                 FontSize = 18,
                 FontFamily = new System.Windows.Media.FontFamily("Segoe UI"), // Windows默认字体
-                Foreground = new SolidColorBrush(Color.FromArgb(102, 128, 128, 128)), // 灰色，60%透明度（40%不透明度）
+                Foreground = new SolidColorBrush(Color.FromArgb(77, 128, 128, 128)), // 灰色，70%透明度（30%不透明度）
                 Margin = new Thickness(0, 0, 0, 2)
             };
             textPanel.Children.Add(text1);
 
-            // 第二行文字 - 与Windows激活水印完全一致
+            // 第二行文字 - 30%不透明度
             var text2 = new System.Windows.Controls.TextBlock
             {
                 Text = _config.WatermarkText2,
                 FontSize = 14,
                 FontFamily = new System.Windows.Media.FontFamily("Segoe UI"), // Windows默认字体
-                Foreground = new SolidColorBrush(Color.FromArgb(102, 128, 128, 128)), // 灰色，60%透明度（40%不透明度）
+                Foreground = new SolidColorBrush(Color.FromArgb(77, 128, 128, 128)), // 灰色，70%透明度（30%不透明度）
             };
             textPanel.Children.Add(text2);
 
@@ -308,6 +321,11 @@ namespace MediaDetectionSystem.Services
 
             _watermarkWindow.Content = textPanel;
             _watermarkWindow.Show();
+            
+            // 使用Win32 API强制置顶，确保高于所有Windows组件
+            var hwnd = new WindowInteropHelper(_watermarkWindow).Handle;
+            SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, 
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
         }
 
         /// <summary>
@@ -317,17 +335,60 @@ namespace MediaDetectionSystem.Services
         {
             if (_watermarkWindow != null)
             {
-                _watermarkWindow.Close();
-                _watermarkWindow = null;
+                try
+                {
+                    _watermarkWindow.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"关闭水印窗口失败: {ex.Message}");
+                }
+                finally
+                {
+                    _watermarkWindow = null;
+                }
             }
         }
 
         /// <summary>
-        /// 清理资源
+        /// 实现IDisposable接口，确保资源正确释放
         /// </summary>
         public void Dispose()
         {
-            HideContinuousAlert();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// 受保护的Dispose方法，执行实际的清理逻辑
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                // 清理托管资源
+                try
+                {
+                    HideContinuousAlert();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Dispose清理资源失败: {ex.Message}");
+                }
+            }
+
+            _disposed = true;
+        }
+
+        /// <summary>
+        /// 析构函数，确保未显式释放时也能清理资源
+        /// </summary>
+        ~AlertManager()
+        {
+            Dispose(false);
         }
     }
 }

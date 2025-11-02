@@ -553,7 +553,7 @@
     "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.2.1",
+    "version": "1.2.2",
     "restore": {
       "projectUniqueName": "D:\\Users\\program\\SeewoTool\\StarReminder\\StarReminder\\C#\\StarReminder\\MediaDetectionSystem.csproj",
       "projectName": "StarReminder",
@@ -633,13 +633,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "获取包漏洞数据时出错: 无法加载源 https://api.nuget.org/v3/index.json 的服务索引。"
-    }
-  ]
+  }
 }

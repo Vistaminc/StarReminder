@@ -496,6 +496,6 @@ StarReminder 支持热加载配置文件，无需重启程序：
 ---
 
 <div align="center">
-  <sub>如有配置问题，请提交 <a href="https://github.com/yourusername/StarReminder/issues">Issue</a></sub>
+  <sub>如有配置问题，请提交 <a href="https://github.com/vistaminc/StarReminder/issues">Issue</a></sub>
 </div>
 

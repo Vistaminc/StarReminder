@@ -48,7 +48,7 @@
 从 GitHub Releases 页面下载最新版本：
 
 ```
-https://github.com/yourusername/StarReminder/releases/latest
+https://github.com/vistaminc/StarReminder/releases/latest
 ```
 
 选择以下文件之一：
@@ -96,7 +96,7 @@ StarReminder/
 #### 1. 克隆仓库
 
 ```powershell
-git clone https://github.com/yourusername/StarReminder.git
+git clone https://github.com/vistaminc/StarReminder.git
 cd StarReminder
 ```
 
@@ -400,6 +400,6 @@ Remove-Item -Path "C:\Program Files\StarReminder" -Recurse -Force
 ---
 
 <div align="center">
-  <sub>如有问题，请提交 <a href="https://github.com/yourusername/StarReminder/issues">Issue</a></sub>
+  <sub>如有问题，请提交 <a href="https://github.com/vistaminc/StarReminder/issues">Issue</a></sub>
 </div>
 

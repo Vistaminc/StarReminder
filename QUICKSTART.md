@@ -19,14 +19,14 @@
 
 ### 选项 A: 下载预编译版本（推荐）
 
-1. 访问 [Releases 页面](https://github.com/yourusername/StarReminder/releases/latest)
+1. 访问 [Releases 页面](https://github.com/vistaminc/StarReminder/releases/latest)
 2. 下载 `StarReminder-v1.2.0-win-x64-standalone.zip`
 3. 解压到任意目录（如 `C:\Program Files\StarReminder\`）
 
 ### 选项 B: 从源码编译
 
 ```powershell
-git clone https://github.com/yourusername/StarReminder.git
+git clone https://github.com/vistaminc/StarReminder.git
 cd StarReminder
 cd "C#/MediaDetectionSystem"
 .\scripts\发布Release版本.bat
@@ -173,16 +173,6 @@ Windows 已保护你的电脑
 | 主题切换 | [使用教程](docs/usage.md#主题切换) |
 | 查看所有功能 | [完整文档](README.md) |
 
-### 使用场景
-
-探索实际应用场景：
-- 🔒 [隐私保护](docs/usage.md#场景一隐私保护)
-- 👨‍👩‍👧 [家长控制](docs/usage.md#场景二家长控制)
-- 🏢 [企业监控](docs/usage.md#场景三企业监控)
-- 📹 [屏幕录制检测](docs/usage.md#场景四屏幕录制检测)
-
----
-
 ## ❓ 常见问题
 
 ### 问：为什么需要管理员权限？
@@ -217,8 +207,8 @@ Windows 已保护你的电脑
 ## 🆘 需要帮助？
 
 - 📖 查看 [完整文档](README.md)
-- 💬 访问 [讨论区](https://github.com/yourusername/StarReminder/discussions)
-- 🐛 提交 [Issue](https://github.com/yourusername/StarReminder/issues)
+- 💬 访问 [讨论区](https://github.com/vistaminc/StarReminder/discussions)
+- 🐛 提交 [Issue](https://github.com/vistaminc/StarReminder/issues)
 - 📧 联系我们: your-email@example.com
 
 ---

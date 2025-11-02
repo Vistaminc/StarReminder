@@ -6,8 +6,8 @@
 <h4 align="center">智能进程监控与媒体设备检测系统</h4>
 
 <p align="center">
-  <a href="https://github.com/yourusername/StarReminder/releases">
-    <img src="https://img.shields.io/badge/version-v1.2.1-blue?style=for-the-badge&logo=semantic-release" alt="Version" />
+  <a href="https://github.com/vistaminc/StarReminder/releases">
+    <img src="https://img.shields.io/badge/version-v1.2.2-blue?style=for-the-badge&logo=semantic-release" alt="Version" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License" />
@@ -15,20 +15,20 @@
   <a href="https://dotnet.microsoft.com/download/dotnet/8.0">
     <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8.0" />
   </a>
-  <a href="https://github.com/yourusername/StarReminder/releases">
+  <a href="https://github.com/vistaminc/StarReminder/releases">
     <img src="https://img.shields.io/badge/platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Platform" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/yourusername/StarReminder/stargazers">
-    <img src="https://img.shields.io/github/stars/yourusername/StarReminder?style=social" alt="Stars" />
+  <a href="https://github.com/vistaminc/StarReminder/stargazers">
+    <img src="https://img.shields.io/github/stars/vistaminc/StarReminder?style=social" alt="Stars" />
   </a>
-  <a href="https://github.com/yourusername/StarReminder/network/members">
-    <img src="https://img.shields.io/github/forks/yourusername/StarReminder?style=social" alt="Forks" />
+  <a href="https://github.com/vistaminc/StarReminder/network/members">
+    <img src="https://img.shields.io/github/forks/vistaminc/StarReminder?style=social" alt="Forks" />
   </a>
-  <a href="https://github.com/yourusername/StarReminder/issues">
-    <img src="https://img.shields.io/github/issues/yourusername/StarReminder?style=social&logo=github" alt="Issues" />
+  <a href="https://github.com/vistaminc/StarReminder/issues">
+    <img src="https://img.shields.io/github/issues/vistaminc/StarReminder?style=social&logo=github" alt="Issues" />
   </a>
 </p>
 
@@ -37,7 +37,7 @@
   <a href="#-功能">功能</a> · 
   <a href="#-快速开始">快速开始</a> · 
   <a href="#-文档">文档</a> · 
-  <a href="https://github.com/yourusername/StarReminder/issues">反馈</a> · 
+  <a href="https://github.com/vistaminc/StarReminder/issues">反馈</a> · 
   <a href="CHANGELOG.md">更新日志</a>
 </p>
 
@@ -48,7 +48,7 @@
 > 📚 **详细教程**: [完整安装指南](docs/installation.md)
 
 > [!IMPORTANT]
-> 当前版本: **v1.2.1**  
+> 当前版本: **v1.2.2**  
 > 支持系统: Windows 10 1809+ / Windows 11  
 > 需要权限: 管理员权限（用于检测媒体设备）  
 > **🚀 性能大幅提升！CPU 降低 82%，界面完全流畅！**
@@ -160,7 +160,7 @@ StarReminder 不仅能检测进程启动，更重要的是：**从设备层面�
 
 #### 方式一：下载发布版本（推荐）
 
-1. 从 [Releases](https://github.com/yourusername/StarReminder/releases) 下载最新版本
+1. 从 [Releases](https://github.com/vistaminc/StarReminder/releases) 下载最新版本
 2. 解压到任意目录
 3. **以管理员身份运行** `StarReminder.exe`
 
@@ -168,7 +168,7 @@ StarReminder 不仅能检测进程启动，更重要的是：**从设备层面�
 
 ```powershell
 # 1. 克隆仓库
-git clone https://github.com/yourusername/StarReminder.git
+git clone https://github.com/vistaminc/StarReminder.git
 cd StarReminder
 
 # 2. 进入项目目录
@@ -332,56 +332,6 @@ StarReminder/
 
 </details>
 
-## 🎯 使用场景
-
-<table>
-<tr>
-<td align="center" width="25%">
-
-### 🔒 隐私保护
-
-监控哪些应用在使用你的摄像头和麦克风
-
-及时发现未授权的媒体访问
-
-自动终止可疑的录制程序
-
-</td>
-<td align="center" width="25%">
-
-### 👨‍👩‍👧 家长控制
-
-监控孩子的电脑使用情况
-
-限制特定程序的运行时间
-
-记录程序使用日志
-
-</td>
-<td align="center" width="25%">
-
-### 🏢 企业管理
-
-监控敏感应用的使用
-
-自动化进程管理
-
-详细的审计日志
-
-</td>
-<td align="center" width="25%">
-
-### 📹 内容创作
-
-防止录屏软件干扰
-
-保护直播隐私
-
-会议录制提醒
-
-</td>
-</tr>
-</table>
 
 ## 🔮 后续计划
 
@@ -449,7 +399,7 @@ StarReminder/
 ### 📮 提交 Issue
 遇到 Bug 或有建议？
 
-[提交 Issue →](https://github.com/yourusername/StarReminder/issues)
+[提交 Issue →](https://github.com/vistaminc/StarReminder/issues)
 
 </td>
 <td align="center">
@@ -457,7 +407,7 @@ StarReminder/
 ### 💬 参与讨论
 有问题想交流？
 
-[讨论区 →](https://github.com/yourusername/StarReminder/discussions)
+[讨论区 →](https://github.com/vistaminc/StarReminder/discussions)
 
 </td>
 <td align="center">
@@ -473,7 +423,7 @@ StarReminder/
 ### ⭐ Star 项目
 喜欢这个项目？
 
-[给个 Star →](https://github.com/yourusername/StarReminder)
+[给个 Star →](https://github.com/vistaminc/StarReminder)
 
 </td>
 </tr>
@@ -483,11 +433,11 @@ StarReminder/
 
 ## 🌟 Star 历史
 
-<a href="https://star-history.com/#yourusername/StarReminder&Date">
+<a href="https://star-history.com/#vistaminc/StarReminder&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=yourusername/StarReminder&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=yourusername/StarReminder&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=yourusername/StarReminder&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=vistaminc/StarReminder&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=vistaminc/StarReminder&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=vistaminc/StarReminder&type=Date" />
   </picture>
 </a>
 
@@ -495,8 +445,8 @@ StarReminder/
 
 感谢所有为项目做出贡献的人！
 
-<a href="https://github.com/yourusername/StarReminder/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=yourusername/StarReminder" />
+<a href="https://github.com/vistaminc/StarReminder/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vistaminc/StarReminder" />
 </a>
 
 特别感谢：
@@ -507,8 +457,8 @@ StarReminder/
 
 ## 📧 联系方式
 
-- 📮 提交 [Issue](https://github.com/yourusername/StarReminder/issues)
-- 💬 参与 [讨论](https://github.com/yourusername/StarReminder/discussions)
+- 📮 提交 [Issue](https://github.com/vistaminc/StarReminder/issues)
+- 💬 参与 [讨论](https://github.com/vistaminc/StarReminder/discussions)
 - 📧 邮箱：vistamin@outlook.com
 
 ---

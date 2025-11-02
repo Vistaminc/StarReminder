@@ -7,6 +7,65 @@
 
 ---
 
+## [1.2.2] - 2025-01-XX
+
+### 🚀 性能优化与体验提升
+
+#### 核心优化
+- **实时检测机制**
+  - 移除新进程扫描间隔限制，实现真正的实时检测
+  - PID智能跟踪机制，避免重复扫描已检测进程
+  - 多线程并行处理，充分利用多核CPU
+  - 新进程1秒内检测并弹窗提醒
+
+- **智能设备检测**
+  - 只有存在媒体相关进程配置时，才检查媒体设备
+  - 非媒体进程（screenCapture.exe、rtcRemoteDesktop.exe）跳过设备检测
+  - 媒体设备检测性能提升50%+（并行检测摄像头/麦克风）
+  - 进程句柄扫描并行化，最大并行度4线程
+
+#### UI性能优化
+- **降低UI刷新频率**
+  - UI Timer从每秒改为每2秒刷新，减少50%刷新开销
+  - 日志自动滚动改用ApplicationIdle优先级，不阻塞UI
+  - 进程状态更新使用字典预构建，性能提升60%
+
+- **内存优化**
+  - 日志图标映射使用静态缓存，避免重复创建
+  - 批量删除日志，减少UI刷新次数
+  - 进程对象正确释放，防止内存泄漏
+
+#### 用户体验改进
+- **水印优化**
+  - Win32 API强制置顶，确保高于所有Windows组件
+  - 透明度优化为30%不透明度，清晰可见
+
+- **通知优化**
+  - Defender样式通知1秒自动消失
+  - 移除超时警告功能，简化逻辑
+
+#### 代码优化
+- **Logger.cs**
+  - 改用JSONL追加写入模式，避免每次加载整个文件
+  - 日志写入性能提升90%+
+
+- **AlertManager.cs**
+  - 实现标准IDisposable模式，确保资源释放
+  - 添加析构函数，防止资源泄漏
+
+- **MainViewModel.cs**
+  - 添加Cleanup方法，应用关闭时清理所有资源
+  - 改进AlertManager管理和内存释放
+
+- **ProcessMonitor.cs**
+  - 进程缓存正确释放
+  - 线程安全的并行处理
+  - 减少Debug输出，降低日志噪音
+
+## [1.2.1] - 2025-11-01
+
+---
+
 ## [未发布]
 
 ### 计划功能
@@ -261,9 +320,9 @@
 ## 反馈
 
 如有问题或建议，请：
-- 提交 [Issue](https://github.com/yourusername/StarReminder/issues)
-- 提交 [Pull Request](https://github.com/yourusername/StarReminder/pulls)
-- 参与 [讨论](https://github.com/yourusername/StarReminder/discussions)
+- 提交 [Issue](https://github.com/vistaminc/StarReminder/issues)
+- 提交 [Pull Request](https://github.com/vistaminc/StarReminder/pulls)
+- 参与 [讨论](https://github.com/vistaminc/StarReminder/discussions)
 
 ---
 

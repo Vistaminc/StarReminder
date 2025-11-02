@@ -628,7 +628,7 @@
                             <StackPanel HorizontalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
                                     <TextBlock x:Name="TxtVersionDisplay" 
-                                              Text="版本 1.2.1" 
+                                              Text="版本 1.2.2" 
                                               FontSize="12" 
                                               Foreground="#6B7280"
                                               VerticalAlignment="Center"

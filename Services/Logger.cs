@@ -49,17 +49,16 @@ namespace MediaDetectionSystem.Services
 
             try
             {
-                var logs = LoadLogs();
-                logs.Add(entry);
-
+                // 优化：使用追加写入模式，避免每次加载整个文件
                 var options = new JsonSerializerOptions
                 {
-                    WriteIndented = true,
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                var json = JsonSerializer.Serialize(logs, options);
-                File.WriteAllText(_logFile, json);
+                var json = JsonSerializer.Serialize(entry, options);
+                
+                // 追加写入，每条日志一行（JSONL格式）
+                File.AppendAllText(_logFile, json + Environment.NewLine);
 
                 // 如果启用了详细日志，同时输出到调试窗口
                 if (_enableDetailedLogging)
@@ -86,16 +85,36 @@ namespace MediaDetectionSystem.Services
 
         public List<LogEntry> LoadLogs()
         {
+            var logs = new List<LogEntry>();
+            
             try
             {
                 if (File.Exists(_logFile))
                 {
-                    var json = File.ReadAllText(_logFile);
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     };
-                    return JsonSerializer.Deserialize<List<LogEntry>>(json, options) ?? new List<LogEntry>();
+                    
+                    // 逐行读取JSONL格式
+                    foreach (var line in File.ReadLines(_logFile))
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            try
+                            {
+                                var entry = JsonSerializer.Deserialize<LogEntry>(line, options);
+                                if (entry != null)
+                                {
+                                    logs.Add(entry);
+                                }
+                            }
+                            catch
+                            {
+                                // 跳过损坏的行
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -103,7 +122,7 @@ namespace MediaDetectionSystem.Services
                 Console.WriteLine($"加载日志失败: {ex.Message}");
             }
 
-            return new List<LogEntry>();
+            return logs;
         }
 
         private void CleanupOldLogs()
@@ -118,12 +137,16 @@ namespace MediaDetectionSystem.Services
                 {
                     var options = new JsonSerializerOptions
                     {
-                        WriteIndented = true,
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     };
 
-                    var json = JsonSerializer.Serialize(filteredLogs, options);
-                    File.WriteAllText(_logFile, json);
+                    // 重写文件，使用JSONL格式
+                    File.WriteAllText(_logFile, string.Empty);
+                    foreach (var log in filteredLogs)
+                    {
+                        var json = JsonSerializer.Serialize(log, options);
+                        File.AppendAllText(_logFile, json + Environment.NewLine);
+                    }
                 }
             }
             catch (Exception ex)
